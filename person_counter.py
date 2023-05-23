@@ -5,6 +5,7 @@ import numpy as np
 from centroidtracker import CentroidTracker
 from collections import defaultdict
 from itertools import zip_longest
+import requests
 
 protopath = "MobileNetSSD_deploy.prototxt"
 modelpath = "MobileNetSSD_deploy.caffemodel"
@@ -61,8 +62,8 @@ def non_max_suppression_fast(boxes, overlapThresh):
 
 
 def main():
-    cap = cv2.VideoCapture('example_01.mp4')
-
+    # cap = cv2.VideoCapture('example_01.mp4')
+    cap = cv2.VideoCapture(0)
     fps_start_time = datetime.datetime.now()
     fps = 0
     total_frames = 0
@@ -101,7 +102,7 @@ def main():
         rects = non_max_suppression_fast(boundingboxes, 0.3)
 
         objects = tracker.update(rects)
-        cv2.line(frame, ( 0 ,H //2), (W , H //2 ), (0, 0, 255), 2)
+        # cv2.line(frame, ( 0 ,H //2), (W , H //2 ), (0, 0, 255), 2)
 
 
         for (objectId, bbox) in objects.items():
@@ -165,10 +166,15 @@ def main():
         cv2.putText(frame, lpc_txt, (5, 60), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 1)
         cv2.putText(frame, opc_txt, (5, 90), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 1)
 
+        
+        f=f'http://192.168.43.31/update_Info?LiveCount={lpc_count}'
+        r=requests.get(f)
+    
 
         cv2.imshow("Frame", frame)
         key = cv2.waitKey(1)
         if key == ord('q'):
+            r=requests.get('http://192.168.43.31/update_Info?LiveCount=0')
             break
 
     cv2.destroyAllWindows()
