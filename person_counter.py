@@ -167,14 +167,14 @@ def main():
         cv2.putText(frame, opc_txt, (5, 90), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 1)
 
         
-        f=f'http://192.168.43.31/update_Info?LiveCount={lpc_count}'
+        f=f'http://192.168.102.30/update_Info?LiveCount={lpc_count}'
         r=requests.get(f)
     
 
         cv2.imshow("Frame", frame)
         key = cv2.waitKey(1)
         if key == ord('q'):
-            r=requests.get('http://192.168.43.31/update_Info?LiveCount=0')
+            r=requests.get('http://192.168.102.30/update_Info?LiveCount=0')
             break
 
     cv2.destroyAllWindows()
